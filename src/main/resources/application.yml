@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: cineconnect
+
+  # Default profile
+  profiles:
+    active: dev
+
+  # JPA Configuration
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # GraphQL Configuration
+  graphql:
+    graphiql:
+      enabled: false
+    schema:
+      printer:
+        enabled: true
+    path: /graphql
+
+# Server Configuration
+server:
+  port: 8080
+
+# Logging
+logging:
+  level:
+    root: INFO
+    io.github.dbc2201.cineconnectgraphqldemo: DEBUG
+    org.springframework.graphql: DEBUG

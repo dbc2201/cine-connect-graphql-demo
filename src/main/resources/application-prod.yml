@@ -1,0 +1,46 @@
+# Production Profile Configuration
+spring:
+  # PostgreSQL - use environment variables
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  # JPA - optimized for production
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        generate_statistics: false
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
+  # GraphQL - disable GraphiQL in production
+  graphql:
+    graphiql:
+      enabled: false
+
+# Logging - minimal for production
+logging:
+  level:
+    root: WARN
+    io.github.dbc2201.cineconnectgraphqldemo: INFO
+    org.springframework.graphql: WARN
+
+# Server - production settings
+server:
+  error:
+    include-message: never
+    include-stacktrace: never

@@ -1,0 +1,38 @@
+# Development Profile Configuration
+spring:
+  # PostgreSQL via Docker
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cineconnect
+    username: cineconnect
+    password: cineconnect_dev
+    driver-class-name: org.postgresql.Driver
+
+  # JPA - show SQL for debugging
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  # Redis via Docker
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # GraphQL - enable GraphiQL for development
+  graphql:
+    graphiql:
+      enabled: true
+
+  # Security - permit all for dev testing
+  security:
+    user:
+      name: admin
+      password: admin
+
+# Logging - verbose for development
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.security: DEBUG
