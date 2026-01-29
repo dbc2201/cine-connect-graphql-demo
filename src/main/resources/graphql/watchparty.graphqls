@@ -1,0 +1,193 @@
+# Watch Party Feature Schema
+# Enables synchronized movie watching with friends
+
+extend type Query {
+    """
+    Get a watch party by ID.
+    """
+    watchParty(id: ID!): WatchParty
+
+    """
+    Get upcoming public watch parties.
+    """
+    upcomingParties(page: Int, size: Int): WatchPartyConnection!
+
+    """
+    Get parties hosted by the current user.
+    Requires authentication.
+    """
+    myHostedParties(page: Int, size: Int): WatchPartyConnection!
+
+    """
+    Get parties the current user is participating in.
+    Requires authentication.
+    """
+    myParties(page: Int, size: Int): WatchPartyConnection!
+
+    """
+    Get live parties for the current user.
+    Requires authentication.
+    """
+    myLiveParties: [WatchParty!]!
+}
+
+extend type Mutation {
+    """
+    Create a new watch party.
+    Requires authentication.
+    """
+    createWatchParty(input: CreateWatchPartyInput!): WatchParty!
+
+    """
+    Update a watch party (host only).
+    Requires authentication.
+    """
+    updateWatchParty(partyId: ID!, input: UpdateWatchPartyInput!): WatchParty!
+
+    """
+    Cancel a watch party (host only).
+    Requires authentication.
+    """
+    cancelWatchParty(partyId: ID!): WatchParty!
+
+    """
+    Start a watch party (transition to LIVE, host only).
+    Requires authentication.
+    """
+    startWatchParty(partyId: ID!): WatchParty!
+
+    """
+    End a watch party (host only).
+    Requires authentication.
+    """
+    endWatchParty(partyId: ID!): WatchParty!
+
+    """
+    Invite a user to a watch party (host only).
+    Requires authentication.
+    """
+    inviteToParty(partyId: ID!, userId: ID!): WatchPartyParticipant!
+
+    """
+    Join a watch party.
+    Requires authentication.
+    """
+    joinWatchParty(partyId: ID!): WatchPartyParticipant!
+
+    """
+    Decline a party invitation.
+    Requires authentication.
+    """
+    declinePartyInvitation(partyId: ID!): WatchPartyParticipant!
+
+    """
+    Leave a watch party.
+    Requires authentication.
+    """
+    leaveWatchParty(partyId: ID!): WatchPartyParticipant!
+
+    """
+    Suggest a movie for a watch party.
+    Requires authentication.
+    """
+    suggestMovie(partyId: ID!, movieId: ID!): MovieSuggestion!
+
+    """
+    Vote for a suggested movie.
+    Requires authentication.
+    """
+    voteForMovie(partyId: ID!, movieId: ID!): MovieSuggestion!
+
+    """
+    Set the final movie for a party (host only).
+    Requires authentication.
+    """
+    setPartyMovie(partyId: ID!, movieId: ID!): WatchParty!
+}
+
+# Watch party status enum
+enum PartyStatus {
+    SCHEDULED
+    LIVE
+    ENDED
+    CANCELLED
+}
+
+# Participant status enum
+enum ParticipantStatus {
+    INVITED
+    JOINED
+    DECLINED
+    LEFT
+}
+
+# Watch party type
+type WatchParty {
+    id: ID!
+    host: User!
+    movie: Movie
+    title: String!
+    description: String
+    scheduledAt: DateTime!
+    startedAt: DateTime
+    endedAt: DateTime
+    status: PartyStatus!
+    maxParticipants: Int
+    isPublic: Boolean!
+    createdAt: DateTime!
+
+    # Computed fields
+    participantCount: Int!
+    isFull: Boolean!
+    participants: [WatchPartyParticipant!]!
+    movieSuggestions: [MovieSuggestion!]!
+
+    # Context-aware fields (require authentication)
+    isHost: Boolean
+    isParticipant: Boolean
+    myParticipation: WatchPartyParticipant
+}
+
+# Participant in a watch party
+type WatchPartyParticipant {
+    id: ID!
+    user: User!
+    status: ParticipantStatus!
+    votedMovie: Movie
+    joinedAt: DateTime
+    createdAt: DateTime!
+}
+
+# Movie suggestion for voting
+type MovieSuggestion {
+    id: ID!
+    movie: Movie!
+    suggestedBy: User!
+    voteCount: Int!
+    createdAt: DateTime!
+}
+
+# Input for creating a watch party
+input CreateWatchPartyInput {
+    title: String!
+    description: String
+    scheduledAt: DateTime!
+    movieId: ID
+    maxParticipants: Int
+    isPublic: Boolean
+}
+
+# Input for updating a watch party
+input UpdateWatchPartyInput {
+    title: String
+    description: String
+    scheduledAt: DateTime
+    maxParticipants: Int
+    isPublic: Boolean
+}
+
+# Connection type for watch party pagination
+type WatchPartyConnection {
+    content: [WatchParty!]!
+    pageInfo: PageInfo!
+}
