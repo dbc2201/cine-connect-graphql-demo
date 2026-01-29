@@ -95,14 +95,22 @@ class UserTest {
     class Equality {
 
         @Test
-        @DisplayName("should be equal when ids match")
-        void shouldBeEqualWhenIdsMatch() {
-            // Note: In practice, IDs are set by JPA. This tests the equals logic.
+        @DisplayName("should be equal when usernames match")
+        void shouldBeEqualWhenUsernamesMatch() {
+            // Equality is based on username (business key), not database ID
+            User user1 = new User("sameuser", "user1@example.com", "hash1");
+            User user2 = new User("sameuser", "user2@example.com", "hash2");
+
+            assertThat(user1).isEqualTo(user2);
+        }
+
+        @Test
+        @DisplayName("should not be equal when usernames differ")
+        void shouldNotBeEqualWhenUsernamesDiffer() {
             User user1 = new User("user1", "user1@example.com", "hash1");
             User user2 = new User("user2", "user2@example.com", "hash2");
 
-            // Both have null IDs, so they should be equal by the equals() implementation
-            assertThat(user1).isEqualTo(user2);
+            assertThat(user1).isNotEqualTo(user2);
         }
 
         @Test
@@ -114,6 +122,15 @@ class UserTest {
             int hash2 = user.hashCode();
 
             assertThat(hash1).isEqualTo(hash2);
+        }
+
+        @Test
+        @DisplayName("should have same hashCode for equal users")
+        void shouldHaveSameHashCodeForEqualUsers() {
+            User user1 = new User("sameuser", "user1@example.com", "hash1");
+            User user2 = new User("sameuser", "user2@example.com", "hash2");
+
+            assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
         }
     }
 
