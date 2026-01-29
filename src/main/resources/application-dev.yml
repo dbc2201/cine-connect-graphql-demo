@@ -1,10 +1,11 @@
 # Development Profile Configuration
 spring:
   # PostgreSQL via Docker
+  # Use environment variables with defaults for local development
   datasource:
-    url: jdbc:postgresql://localhost:5432/cineconnect
-    username: cineconnect
-    password: cineconnect_dev
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:cineconnect}
+    username: ${DB_USERNAME:cineconnect}
+    password: ${DB_PASSWORD:cineconnect_dev}
     driver-class-name: org.postgresql.Driver
 
   # JPA - show SQL for debugging
@@ -16,19 +17,13 @@ spring:
   # Redis via Docker
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   # GraphQL - enable GraphiQL for development
   graphql:
     graphiql:
       enabled: true
-
-  # Security - permit all for dev testing
-  security:
-    user:
-      name: admin
-      password: admin
 
 # Logging - verbose for development
 logging:
