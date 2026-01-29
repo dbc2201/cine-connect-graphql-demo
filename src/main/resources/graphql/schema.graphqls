@@ -1,0 +1,15 @@
+# CineConnect GraphQL Schema
+# Base types and queries
+
+type Query {
+    """
+    Health check query - returns API status
+    """
+    health: HealthStatus!
+}
+
+type HealthStatus {
+    status: String!
+    version: String!
+    timestamp: String!
+}
