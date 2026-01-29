@@ -1,0 +1,488 @@
+{
+  "info": {
+    "_postman_id": "cineconnect-graphql-api",
+    "name": "CineConnect GraphQL API",
+    "description": "GraphQL API collection for CineConnect - Social Entertainment Discovery Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Queries",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Health {\n  health {\n    status\n    version\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get All Genres",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Genres {\n  genres {\n    id\n    name\n    slug\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get All Moods",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Moods {\n  moods {\n    id\n    name\n    emoji\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Movie by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Movie($id: ID!) {\n  movie(id: $id) {\n    id\n    title\n    originalTitle\n    releaseYear\n    durationMinutes\n    synopsis\n    posterUrl\n    backdropUrl\n    language\n    genres {\n      id\n      name\n      slug\n    }\n    moods {\n      id\n      name\n      emoji\n    }\n    averageRating\n    reviewCount\n    createdAt\n  }\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Movies (Paginated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Movies($filter: MovieFilterInput, $page: Int, $size: Int) {\n  movies(filter: $filter, page: $page, size: $size) {\n    content {\n      id\n      title\n      releaseYear\n      posterUrl\n      genres {\n        name\n      }\n      averageRating\n      reviewCount\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      totalPages\n      totalElements\n    }\n  }\n}",
+                "variables": "{\n  \"page\": 0,\n  \"size\": 10\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Movies by Genre",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query MoviesByGenre($filter: MovieFilterInput, $page: Int, $size: Int) {\n  movies(filter: $filter, page: $page, size: $size) {\n    content {\n      id\n      title\n      releaseYear\n      genres {\n        name\n      }\n      averageRating\n    }\n    pageInfo {\n      totalElements\n    }\n  }\n}",
+                "variables": "{\n  \"filter\": {\n    \"genreSlug\": \"action\"\n  },\n  \"page\": 0,\n  \"size\": 10\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Movies by Mood",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query MoviesByMood($filter: MovieFilterInput, $page: Int, $size: Int) {\n  movies(filter: $filter, page: $page, size: $size) {\n    content {\n      id\n      title\n      releaseYear\n      moods {\n        name\n        emoji\n      }\n      averageRating\n    }\n    pageInfo {\n      totalElements\n    }\n  }\n}",
+                "variables": "{\n  \"filter\": {\n    \"moodName\": \"Mind Bending\"\n  },\n  \"page\": 0,\n  \"size\": 10\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Search Movies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query SearchMovies($query: String!, $page: Int, $size: Int) {\n  searchMovies(query: $query, page: $page, size: $size) {\n    content {\n      id\n      title\n      releaseYear\n      synopsis\n      averageRating\n    }\n    pageInfo {\n      totalElements\n    }\n  }\n}",
+                "variables": "{\n  \"query\": \"inception\",\n  \"page\": 0,\n  \"size\": 10\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query User($id: ID!) {\n  user(id: $id) {\n    id\n    username\n    displayName\n    email\n    avatarUrl\n    bio\n    createdAt\n  }\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get User by Username",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query UserByUsername($username: String!) {\n  userByUsername(username: $username) {\n    id\n    username\n    displayName\n    email\n    createdAt\n  }\n}",
+                "variables": "{\n  \"username\": \"testuser\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Review by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query Review($id: ID!) {\n  review(id: $id) {\n    id\n    rating\n    content\n    containsSpoiler\n    reactionTags\n    createdAt\n    user {\n      id\n      username\n      displayName\n    }\n    movie {\n      id\n      title\n    }\n  }\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews for Movie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query ReviewsForMovie($movieId: ID!, $page: Int, $size: Int) {\n  reviewsForMovie(movieId: $movieId, page: $page, size: $size) {\n    content {\n      id\n      rating\n      content\n      containsSpoiler\n      reactionTags\n      createdAt\n      user {\n        username\n        displayName\n      }\n    }\n    pageInfo {\n      hasNextPage\n      totalElements\n    }\n  }\n}",
+                "variables": "{\n  \"movieId\": \"1\",\n  \"page\": 0,\n  \"size\": 10\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mutations",
+      "item": [
+        {
+          "name": "Create Movie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateMovie($input: CreateMovieInput!) {\n  createMovie(input: $input) {\n    id\n    title\n    originalTitle\n    releaseYear\n    durationMinutes\n    synopsis\n    language\n    genres {\n      id\n      name\n    }\n    moods {\n      id\n      name\n      emoji\n    }\n    createdAt\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"title\": \"The Dark Knight\",\n    \"originalTitle\": \"The Dark Knight\",\n    \"releaseYear\": 2008,\n    \"durationMinutes\": 152,\n    \"synopsis\": \"When the menace known as the Joker wreaks havoc on Gotham, Batman must confront his greatest test.\",\n    \"language\": \"en\",\n    \"genreIds\": [1, 5, 7],\n    \"moodIds\": [6, 7]\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Update Movie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateMovie($id: ID!, $input: UpdateMovieInput!) {\n  updateMovie(id: $id, input: $input) {\n    id\n    title\n    synopsis\n    genres {\n      name\n    }\n    moods {\n      name\n    }\n  }\n}",
+                "variables": "{\n  \"id\": \"1\",\n  \"input\": {\n    \"synopsis\": \"A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateReview($input: CreateReviewInput!) {\n  createReview(input: $input) {\n    id\n    rating\n    content\n    containsSpoiler\n    reactionTags\n    createdAt\n    user {\n      username\n    }\n    movie {\n      title\n    }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"movieId\": 1,\n    \"rating\": 4.5,\n    \"content\": \"A masterpiece of modern cinema.\",\n    \"containsSpoiler\": false,\n    \"reactionTags\": [\"MIND_BENDING\", \"VISUAL_MASTERPIECE\", \"REWATCHABLE\"]\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateReview($id: ID!, $input: UpdateReviewInput!) {\n  updateReview(id: $id, input: $input) {\n    id\n    rating\n    content\n    containsSpoiler\n    reactionTags\n  }\n}",
+                "variables": "{\n  \"id\": \"1\",\n  \"input\": {\n    \"rating\": 5.0,\n    \"content\": \"After rewatching, this is a perfect 5!\"\n  }\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation DeleteReview($id: ID!) {\n  deleteReview(id: $id)\n}",
+                "variables": "{\n  \"id\": \"1\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schema Introspection",
+      "item": [
+        {
+          "name": "Full Schema",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n      fields {\n        name\n        description\n        args {\n          name\n          type {\n            name\n            kind\n          }\n        }\n      }\n    }\n    mutationType {\n      name\n      fields {\n        name\n        description\n        args {\n          name\n          type {\n            name\n            kind\n          }\n        }\n      }\n    }\n    types {\n      name\n      kind\n      description\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Type Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query TypeInfo($typeName: String!) {\n  __type(name: $typeName) {\n    name\n    kind\n    description\n    fields {\n      name\n      description\n      type {\n        name\n        kind\n        ofType {\n          name\n          kind\n        }\n      }\n    }\n    enumValues {\n      name\n      description\n    }\n  }\n}",
+                "variables": "{\n  \"typeName\": \"ReactionTag\"\n}"
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

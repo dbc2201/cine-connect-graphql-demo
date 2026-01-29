@@ -59,7 +59,7 @@ public class Movie {
     @Column(name = "imdb_id", unique = true, length = 20)
     private String imdbId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "movie_genres",
         joinColumns = @JoinColumn(name = "movie_id"),
@@ -67,7 +67,7 @@ public class Movie {
     )
     private Set<Genre> genres = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "movie_moods",
         joinColumns = @JoinColumn(name = "movie_id"),
