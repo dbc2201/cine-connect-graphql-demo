@@ -56,7 +56,7 @@ public class Review {
         name = "review_reaction_tags",
         joinColumns = @JoinColumn(name = "review_id")
     )
-    @Column(name = "reaction_tag")
+    @Column(name = "reaction_tag", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<ReactionTag> reactionTags = new HashSet<>();
 
