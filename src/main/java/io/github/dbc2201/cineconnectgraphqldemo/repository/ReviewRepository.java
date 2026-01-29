@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -32,7 +33,19 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
      */
     Page<Review> findByMovieId(Long movieId, Pageable pageable);
 
-    // TODO: Add findFriendReviewsForMovie in Phase 5 when Follower entity is created
+    /**
+     * Find reviews by multiple users (for activity feed).
+     */
+    Page<Review> findByUserIdIn(Collection<Long> userIds, Pageable pageable);
+
+    /**
+     * Find reviews for a specific movie by users that the current user follows.
+     * Useful for showing "Your friends' reviews" on a movie page.
+     */
+    @Query("SELECT r FROM Review r WHERE r.movie.id = :movieId AND r.user.id IN :friendIds ORDER BY r.createdAt DESC")
+    Page<Review> findFriendReviewsForMovie(@Param("movieId") Long movieId,
+                                           @Param("friendIds") Collection<Long> friendIds,
+                                           Pageable pageable);
 
     /**
      * Calculate average rating for a movie.
