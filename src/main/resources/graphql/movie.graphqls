@@ -1,0 +1,82 @@
+# Movie types for CineConnect
+
+type Movie {
+    id: ID!
+    title: String!
+    originalTitle: String
+    releaseYear: Int
+    durationMinutes: Int
+    synopsis: String
+    posterUrl: String
+    backdropUrl: String
+    language: String
+    tmdbId: Int
+    imdbId: String
+    createdAt: DateTime!
+
+    # Relationships
+    genres: [Genre!]!
+    moods: [Mood!]!
+
+    # Derived fields
+    averageRating: Float
+    reviewCount: Int!
+}
+
+type Genre {
+    id: ID!
+    name: String!
+    slug: String!
+}
+
+type Mood {
+    id: ID!
+    name: String!
+    emoji: String
+    description: String
+}
+
+# Pagination wrapper for movies
+type MovieConnection {
+    content: [Movie!]!
+    pageInfo: PageInfo!
+}
+
+# Filter input for movie queries
+input MovieFilterInput {
+    genreSlug: String
+    moodName: String
+    releaseYear: Int
+    language: String
+    maxDurationMinutes: Int
+    minRating: Float
+}
+
+# Input types for movie mutations
+input CreateMovieInput {
+    title: String!
+    originalTitle: String
+    releaseYear: Int
+    durationMinutes: Int
+    synopsis: String
+    posterUrl: String
+    backdropUrl: String
+    language: String
+    tmdbId: Int
+    imdbId: String
+    genreIds: [ID!]
+    moodIds: [ID!]
+}
+
+input UpdateMovieInput {
+    title: String
+    originalTitle: String
+    releaseYear: Int
+    durationMinutes: Int
+    synopsis: String
+    posterUrl: String
+    backdropUrl: String
+    language: String
+    genreIds: [ID!]
+    moodIds: [ID!]
+}

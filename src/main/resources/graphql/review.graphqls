@@ -1,0 +1,53 @@
+# Review types for CineConnect
+
+type Review {
+    id: ID!
+    rating: Float!
+    content: String
+    containsSpoiler: Boolean!
+    reactionTags: [ReactionTag!]!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+
+    # Relationships
+    user: User!
+    movie: Movie!
+}
+
+# Reaction tags enum - matches Java enum
+enum ReactionTag {
+    MIND_BENDING
+    PLOT_TWIST
+    UNDERRATED_GEM
+    COMFORT_WATCH
+    REWATCHABLE
+    NOT_WORTH_HYPE
+    TEARJERKER
+    CROWD_PLEASER
+    SLOW_BURN
+    VISUAL_MASTERPIECE
+    GREAT_SOUNDTRACK
+    STRONG_PERFORMANCE
+}
+
+# Pagination wrapper for reviews
+type ReviewConnection {
+    content: [Review!]!
+    pageInfo: PageInfo!
+}
+
+# Input types for review mutations
+input CreateReviewInput {
+    movieId: ID!
+    rating: Float!
+    content: String
+    containsSpoiler: Boolean = false
+    reactionTags: [ReactionTag!]
+}
+
+input UpdateReviewInput {
+    rating: Float
+    content: String
+    containsSpoiler: Boolean
+    reactionTags: [ReactionTag!]
+}

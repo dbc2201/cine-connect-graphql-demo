@@ -1,0 +1,30 @@
+# User types for CineConnect
+
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    displayName: String
+    avatarUrl: String
+    bio: String
+    createdAt: DateTime!
+
+    # Derived fields (resolved separately)
+    reviewCount: Int!
+    followerCount: Int!
+    followingCount: Int!
+}
+
+# Input types for user operations
+input CreateUserInput {
+    username: String!
+    email: String!
+    password: String!
+    displayName: String
+}
+
+input UpdateUserInput {
+    displayName: String
+    avatarUrl: String
+    bio: String
+}
