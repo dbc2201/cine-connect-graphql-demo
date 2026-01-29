@@ -31,12 +31,12 @@ public class Review {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
@@ -52,7 +52,7 @@ public class Review {
     @Column(name = "contains_spoiler", nullable = false)
     private boolean containsSpoiler = false;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "review_reaction_tags",
         joinColumns = @JoinColumn(name = "review_id")
