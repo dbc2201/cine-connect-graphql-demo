@@ -1,5 +1,6 @@
 package io.github.dbc2201.cineconnectgraphqldemo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -78,6 +79,11 @@ public class User {
         return email;
     }
 
+    /**
+     * Returns the password hash. This field is excluded from JSON serialization
+     * to prevent accidental exposure via APIs.
+     */
+    @JsonIgnore
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -119,17 +125,26 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    /**
+     * Equality based on username (business key), not database ID.
+     * This ensures correct behavior in collections before and after persistence.
+     * Two users with the same username are considered equal regardless of ID.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(username, user.username);
     }
 
+    /**
+     * Hash code based on username (business key) for consistency with equals().
+     * Using a stable business key prevents issues when entities are added to
+     * HashSets before persistence (when ID is null).
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(username);
     }
 
     @Override

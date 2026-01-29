@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -133,12 +134,20 @@ public class Movie {
         return imdbId;
     }
 
+    /**
+     * Returns an unmodifiable view of genres.
+     * Use addGenre/removeGenre methods to modify.
+     */
     public Set<Genre> getGenres() {
-        return genres;
+        return Collections.unmodifiableSet(genres);
     }
 
+    /**
+     * Returns an unmodifiable view of moods.
+     * Use addMood/removeMood methods to modify.
+     */
     public Set<Mood> getMoods() {
-        return moods;
+        return Collections.unmodifiableSet(moods);
     }
 
     public Instant getCreatedAt() {
@@ -208,17 +217,26 @@ public class Movie {
         this.moods.remove(mood);
     }
 
+    /**
+     * Equality based on title (business key), not database ID.
+     * This ensures correct behavior in collections before and after persistence.
+     * Note: In production, consider using tmdbId or imdbId if always present.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return Objects.equals(id, movie.id);
+        if (!(o instanceof Movie movie)) return false;
+        return Objects.equals(title, movie.title);
     }
 
+    /**
+     * Hash code based on title (business key) for consistency with equals().
+     * Using a stable business key prevents issues when entities are added to
+     * HashSets before persistence (when ID is null).
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(title);
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -101,8 +102,12 @@ public class Review {
         return containsSpoiler;
     }
 
+    /**
+     * Returns an unmodifiable view of reaction tags.
+     * Use addReactionTag/removeReactionTag/setReactionTags methods to modify.
+     */
     public Set<ReactionTag> getReactionTags() {
-        return reactionTags;
+        return Collections.unmodifiableSet(reactionTags);
     }
 
     public Instant getCreatedAt() {
@@ -139,17 +144,26 @@ public class Review {
         this.reactionTags = tags;
     }
 
+    /**
+     * Equality based on user+movie composite (business key), not database ID.
+     * This aligns with the database unique constraint on (user_id, movie_id)
+     * and ensures correct behavior in collections before and after persistence.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Review review = (Review) o;
-        return Objects.equals(id, review.id);
+        if (!(o instanceof Review review)) return false;
+        return Objects.equals(user, review.user) && Objects.equals(movie, review.movie);
     }
 
+    /**
+     * Hash code based on user+movie composite (business key) for consistency with equals().
+     * Using stable business keys prevents issues when entities are added to
+     * HashSets before persistence (when ID is null).
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(user, movie);
     }
 
     @Override
