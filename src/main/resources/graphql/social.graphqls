@@ -1,0 +1,111 @@
+# Social Features Schema
+# Following users and watchlist management
+
+extend type Query {
+    """
+    Get users that a specific user is following.
+    """
+    following(userId: ID!, page: Int, size: Int): UserConnection!
+
+    """
+    Get followers of a specific user.
+    """
+    followers(userId: ID!, page: Int, size: Int): UserConnection!
+
+    """
+    Get a user's watchlist.
+    """
+    watchlist(userId: ID!, page: Int, size: Int): WatchlistConnection!
+
+    """
+    Check if the current user is following another user.
+    Requires authentication.
+    """
+    isFollowing(userId: ID!): Boolean!
+
+    """
+    Check if a movie is in the current user's watchlist.
+    Requires authentication.
+    """
+    isInWatchlist(movieId: ID!): Boolean!
+
+    """
+    Get activity feed showing reviews from users you follow.
+    Requires authentication.
+    """
+    friendsFeed(page: Int, size: Int): ReviewConnection!
+
+    """
+    Get global feed showing recent reviews from all users.
+    Useful for discovery.
+    """
+    globalFeed(page: Int, size: Int): ReviewConnection!
+}
+
+extend type Mutation {
+    """
+    Follow a user. Requires authentication.
+    """
+    followUser(userId: ID!): FollowPayload!
+
+    """
+    Unfollow a user. Requires authentication.
+    """
+    unfollowUser(userId: ID!): Boolean!
+
+    """
+    Add a movie to watchlist. Requires authentication.
+    """
+    addToWatchlist(movieId: ID!, notes: String): WatchlistItem!
+
+    """
+    Remove a movie from watchlist. Requires authentication.
+    """
+    removeFromWatchlist(movieId: ID!): Boolean!
+
+    """
+    Update notes on a watchlist item. Requires authentication.
+    """
+    updateWatchlistNotes(movieId: ID!, notes: String): WatchlistItem!
+}
+
+# Extend User type with additional social fields
+# Note: followingCount and followerCount are defined in user.graphqls
+extend type User {
+    """
+    Number of movies in this user's watchlist.
+    """
+    watchlistCount: Int!
+
+    """
+    Whether the current authenticated user is following this user.
+    Returns null if not authenticated.
+    """
+    isFollowedByMe: Boolean
+}
+
+# Payload for follow mutation
+type FollowPayload {
+    success: Boolean!
+    user: User!
+}
+
+# Watchlist item type
+type WatchlistItem {
+    id: ID!
+    movie: Movie!
+    addedAt: DateTime!
+    notes: String
+}
+
+# Connection type for watchlist pagination
+type WatchlistConnection {
+    content: [WatchlistItem!]!
+    pageInfo: PageInfo!
+}
+
+# Connection type for user pagination
+type UserConnection {
+    content: [User!]!
+    pageInfo: PageInfo!
+}

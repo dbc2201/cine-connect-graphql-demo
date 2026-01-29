@@ -42,15 +42,6 @@ public class UserController {
             org.springframework.data.domain.Pageable.unpaged()).getTotalElements();
     }
 
-    @SchemaMapping(typeName = "User", field = "followerCount")
-    public int followerCount(User user) {
-        // TODO: Implement in Phase 5 when Follower entity is added
-        return 0;
-    }
-
-    @SchemaMapping(typeName = "User", field = "followingCount")
-    public int followingCount(User user) {
-        // TODO: Implement in Phase 5 when Follower entity is added
-        return 0;
-    }
+    // Note: followerCount, followingCount, watchlistCount, and isFollowedByMe
+    // field resolvers are implemented in SocialController (Phase 5)
 }
