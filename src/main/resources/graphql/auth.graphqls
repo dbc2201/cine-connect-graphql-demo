@@ -1,0 +1,56 @@
+# Authentication Schema
+# Mutations for user registration, login, and token refresh
+
+extend type Mutation {
+    """
+    Register a new user account.
+    Returns access token, refresh token, and user data on success.
+    """
+    register(input: RegisterInput!): AuthPayload!
+
+    """
+    Log in with username/email and password.
+    Returns access token, refresh token, and user data on success.
+    """
+    login(input: LoginInput!): AuthPayload!
+
+    """
+    Refresh an expired access token using a valid refresh token.
+    Returns new access token and refresh token.
+    """
+    refreshToken(refreshToken: String!): AuthPayload!
+}
+
+# Input types for authentication mutations
+input RegisterInput {
+    username: String!
+    email: String!
+    password: String!
+    displayName: String
+}
+
+input LoginInput {
+    """
+    Can be either username or email address.
+    """
+    usernameOrEmail: String!
+    password: String!
+}
+
+# Authentication response containing tokens and user
+type AuthPayload {
+    """
+    JWT access token. Include in Authorization header as: Bearer <token>
+    """
+    accessToken: String!
+
+    """
+    JWT refresh token. Use with refreshToken mutation to get new access token.
+    """
+    refreshToken: String!
+
+    """
+    The authenticated user.
+    """
+    user: User!
+}

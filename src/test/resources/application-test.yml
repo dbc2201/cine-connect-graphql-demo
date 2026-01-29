@@ -27,3 +27,9 @@ spring:
     user:
       name: test
       password: test
+
+# JWT Configuration for tests
+jwt:
+  secret: cineconnect-test-secret-key-must-be-at-least-256-bits-long!!
+  access-token-validity-ms: 3600000
+  refresh-token-validity-ms: 604800000

@@ -13,6 +13,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
+     * Find a user by their exact username.
+     */
+    Optional<User> findByUsername(String username);
+
+    /**
      * Find a user by their username (case-insensitive).
      */
     Optional<User> findByUsernameIgnoreCase(String username);
@@ -23,7 +28,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     /**
-     * Check if a username is already taken.
+     * Check if a username is already taken (exact match).
+     */
+    boolean existsByUsername(String username);
+
+    /**
+     * Check if a username is already taken (case-insensitive).
      */
     boolean existsByUsernameIgnoreCase(String username);
 

@@ -1,17 +1,21 @@
 package io.github.dbc2201.cineconnectgraphqldemo.config;
 
+import io.github.dbc2201.cineconnectgraphqldemo.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Security configuration for CineConnect.
  *
  * <p>This configuration establishes a stateless security model suitable for
- * a GraphQL API that will use JWT token-based authentication (Phase 4).
+ * a GraphQL API that uses JWT token-based authentication.
  *
  * <h3>Security Decisions:</h3>
  * <ul>
@@ -20,21 +24,25 @@ import org.springframework.security.web.SecurityFilterChain;
  *       Tokens must be sent in Authorization header, which browsers don't auto-attach.</li>
  *   <li><b>Stateless sessions:</b> No server-side session state; each request
  *       must be independently authenticated via JWT token.</li>
+ *   <li><b>BCrypt:</b> Industry-standard password hashing with adaptive cost factor.</li>
  * </ul>
  *
- * <h3>Current State (Pre-Phase 4):</h3>
- * <p>All endpoints are currently open for development. Phase 4 will add:
- * <ul>
- *   <li>JWT token validation filter</li>
- *   <li>Role-based access control for mutations</li>
- *   <li>User authentication endpoints</li>
- * </ul>
+ * <h3>Authorization Model:</h3>
+ * <p>GraphQL handles authorization differently from REST. Since all requests go to /graphql,
+ * we permit all requests at the HTTP level and handle authorization within GraphQL resolvers.
+ * This allows fine-grained per-field authorization.
  *
  * @see <a href="https://owasp.org/www-community/attacks/csrf">OWASP CSRF</a>
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,15 +53,23 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // TODO: Phase 4 - Replace permitAll() with proper authorization:
-            // - Queries: mostly public (except user-specific data)
-            // - Mutations: require authentication
-            // - Admin operations: require ADMIN role
+            // Add JWT filter before username/password authentication
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            // GraphQL authorization is handled in resolvers, permit all at HTTP level
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/graphql/**", "/graphiql/**").permitAll()
                 .anyRequest().permitAll()
             );
 
         return http.build();
+    }
+
+    /**
+     * BCrypt password encoder with default strength (10 rounds).
+     * This provides strong, adaptive hashing that becomes slower as hardware improves.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
