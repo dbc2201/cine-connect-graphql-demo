@@ -4,7 +4,9 @@ import io.github.dbc2201.cineconnectgraphqldemo.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository for User entity operations.
@@ -41,4 +43,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Check if an email is already registered.
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Batch load users by their IDs (for DataLoader).
+     */
+    List<User> findAllByIdIn(Set<Long> ids);
 }

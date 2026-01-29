@@ -59,6 +59,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     long countByMovieId(Long movieId);
 
     /**
+     * Count reviews by a user.
+     */
+    long countByUserId(Long userId);
+
+    /**
      * Check if a user has reviewed a movie.
      */
     boolean existsByUserIdAndMovieId(Long userId, Long movieId);

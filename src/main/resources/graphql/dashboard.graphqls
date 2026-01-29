@@ -1,0 +1,81 @@
+# Dashboard and Statistics Schema
+
+extend type Query {
+    """
+    Get the current user's dashboard with statistics and recent activity.
+    Requires authentication.
+    """
+    myDashboard: UserDashboard!
+
+    """
+    Get platform-wide statistics.
+    Public endpoint, but some stats may be cached.
+    """
+    platformStats: PlatformStats!
+}
+
+# User dashboard with statistics and recent activity
+type UserDashboard {
+    """
+    Total number of reviews written by the user.
+    """
+    reviewCount: Int!
+
+    """
+    Number of users following this user.
+    """
+    followerCount: Int!
+
+    """
+    Number of users this user is following.
+    """
+    followingCount: Int!
+
+    """
+    Number of movies in the user's watchlist.
+    """
+    watchlistCount: Int!
+
+    """
+    Number of watch parties hosted by the user.
+    """
+    hostedPartiesCount: Int!
+
+    """
+    Recent reviews by the user (last 5).
+    """
+    recentReviews: [Review!]!
+
+    """
+    Upcoming watch parties the user is involved in.
+    """
+    upcomingParties: [WatchParty!]!
+}
+
+# Platform-wide statistics
+type PlatformStats {
+    """
+    Total number of registered users.
+    """
+    totalUsers: Int!
+
+    """
+    Total number of movies in the database.
+    """
+    totalMovies: Int!
+
+    """
+    Total number of reviews written.
+    """
+    totalReviews: Int!
+
+    """
+    Number of currently scheduled watch parties.
+    """
+    scheduledParties: Int!
+
+    """
+    Number of currently live watch parties.
+    """
+    liveParties: Int!
+}

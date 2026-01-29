@@ -38,6 +38,8 @@ public class MovieService {
         this.moodRepository = moodRepository;
     }
 
+    // Note: Not caching JPA entities directly as they have lazy-loaded proxies
+    // that don't serialize well. Consider caching DTOs instead in production.
     public Optional<Movie> findById(Long id) {
         return movieRepository.findById(id);
     }
@@ -62,6 +64,8 @@ public class MovieService {
         return movieRepository.findByTitleContainingIgnoreCase(query, pageable);
     }
 
+    // Note: Genre and Mood are simple entities but still JPA-managed.
+    // Caching can be enabled with proper DTO conversion for production use.
     public List<Genre> findAllGenres() {
         return genreRepository.findAllByOrderByNameAsc();
     }
