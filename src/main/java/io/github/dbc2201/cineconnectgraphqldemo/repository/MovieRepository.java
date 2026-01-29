@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository for Movie entity operations.
@@ -58,4 +59,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Find movies shorter than a given duration.
      */
     Page<Movie> findByDurationMinutesLessThanEqual(Integer maxDuration, Pageable pageable);
+
+    /**
+     * Batch load movies by their IDs (for DataLoader).
+     */
+    List<Movie> findAllByIdIn(Set<Long> ids);
 }
