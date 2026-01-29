@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Firebase ###
+firebase-debug.log
+.firebase/
+
+### Environment ###
+.env
+.env.local
