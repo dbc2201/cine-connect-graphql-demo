@@ -1,15 +1,52 @@
 # CineConnect GraphQL Schema
-# Base types and queries
+# Main schema file - imports types from other files
+
+scalar DateTime
 
 type Query {
-    """
-    Health check query - returns API status
-    """
+    # Health check
     health: HealthStatus!
+
+    # User queries
+    user(id: ID!): User
+    userByUsername(username: String!): User
+
+    # Movie queries
+    movie(id: ID!): Movie
+    movies(filter: MovieFilterInput, page: Int = 0, size: Int = 20): MovieConnection!
+    searchMovies(query: String!, page: Int = 0, size: Int = 20): MovieConnection!
+
+    # Genre and Mood queries
+    genres: [Genre!]!
+    moods: [Mood!]!
+
+    # Review queries
+    review(id: ID!): Review
+    reviewsForMovie(movieId: ID!, page: Int = 0, size: Int = 20): ReviewConnection!
 }
 
+type Mutation {
+    # Movie mutations
+    createMovie(input: CreateMovieInput!): Movie!
+    updateMovie(id: ID!, input: UpdateMovieInput!): Movie!
+
+    # Review mutations
+    createReview(input: CreateReviewInput!): Review!
+    updateReview(id: ID!, input: UpdateReviewInput!): Review!
+    deleteReview(id: ID!): Boolean!
+}
+
+# Health check type
 type HealthStatus {
     status: String!
     version: String!
     timestamp: String!
+}
+
+# Pagination types
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    totalPages: Int!
+    totalElements: Int!
 }
