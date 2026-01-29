@@ -25,6 +25,14 @@ spring:
     graphiql:
       enabled: true
 
+# JWT Configuration
+# IMPORTANT: Use a strong secret in production (at least 256 bits / 32 bytes)
+# This dev secret is for development only - never use in production
+jwt:
+  secret: ${JWT_SECRET:cineconnect-dev-secret-key-must-be-at-least-256-bits-long}
+  access-token-validity-ms: 3600000    # 1 hour
+  refresh-token-validity-ms: 604800000 # 7 days
+
 # Logging - verbose for development
 logging:
   level:
